@@ -1,0 +1,377 @@
+import 'package:flutter/material.dart';
+import '../theme/app_theme.dart';
+import '../widgets/app_drawer.dart';
+import '../widgets/wave_clipper.dart';
+
+class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      drawer: AppDrawer(
+        userName: 'Mariana Ribeiro',
+        userEmail: 'mari.ribeiro@gmail.com',
+        currentRoute: '/inicio',
+        onNavigate: (route) {
+          Navigator.of(context).pop();
+          if (route != '/inicio') {
+            Navigator.of(context).pushNamed(route);
+          }
+        },
+      ),
+      backgroundColor: AppColors.background,
+      body: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(child: _HomeHeader()),
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
+            sliver: SliverList(
+              delegate: SliverChildListDelegate([
+                const _ImpactCard(),
+                const SizedBox(height: 28),
+                Text(
+                  'Ações Rápidas',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(height: 14),
+                const _QuickActionsRow(),
+                const SizedBox(height: 28),
+                Text(
+                  'Fique por dentro',
+                  style: Theme.of(context).textTheme.titleLarge,
+                ),
+                const SizedBox(height: 14),
+                const _CampaignCard(
+                  title: 'Campanha de Maio',
+                  date:
+                      '19/05 · Dia Mundial e Nacional da Doação de Leite Humano',
+                  description:
+                      'Juntos, podemos salvar mais vidas! Participe e compartilhe.',
+                ),
+                const SizedBox(height: 14),
+                const _CampaignCard(
+                  title: 'Novo Ponto de Coleta',
+                  date: 'Agora perto de você',
+                  description:
+                      'Abrimos um novo posto de coleta na sua região. Confira o endereço e horários.',
+                  icon: Icons.location_on,   
+                ),
+              ]),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HomeHeader extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ClipPath(
+      clipper: DripWaveClipper(),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.fromLTRB(8, 8, 8, 40),
+        decoration: const BoxDecoration(gradient: AppColors.gradientHeader),
+        child: SafeArea(
+          bottom: false,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Builder(
+                    builder: (context) => IconButton(
+                      icon: const Icon(Icons.menu, color: Colors.white),
+                      onPressed: () => Scaffold.of(context).openDrawer(),
+                    ),
+                  ),
+                  Text(
+                    'LactaRede',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const Spacer(),
+                  Stack(
+                    clipBehavior: Clip.none,
+                    children: [
+                      IconButton(
+                        icon: const Icon(
+                          Icons.notifications_none,
+                          color: Colors.white,
+                        ),
+                        onPressed: () {},
+                      ),
+                      Positioned(
+                        right: 10,
+                        top: 10,
+                        child: Container(
+                          width: 8,
+                          height: 8,
+                          decoration: const BoxDecoration(
+                            color: Color(0xFFFFC857),
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              const SizedBox(height: 6),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        style: Theme.of(context).textTheme.headlineSmall
+                            ?.copyWith(color: Colors.white),
+                        children: const [
+                          TextSpan(text: 'Olá, Mariana! '),
+                          TextSpan(text: '💙', style: TextStyle(fontSize: 18)),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Que bom ter você por aqui',
+                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        color: Colors.white.withOpacity(0.9),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ImpactCard extends StatelessWidget {
+  const _ImpactCard();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(top: 4),
+      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppRadius.card),
+        boxShadow: AppShadows.card,
+      ),
+      child: Column(
+        children: [
+          Row(
+            children: [
+              Icon(Icons.favorite, size: 16, color: AppColors.primary),
+              const SizedBox(width: 6),
+              Text(
+                'Nosso Impacto',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              _StatItem(value: '125', label: 'Doadores\ncadastrados'),
+              _VerticalDivider(),
+              _StatItem(value: '1.250L', label: 'Leite\ndoado'),
+              _VerticalDivider(),
+              _StatItem(value: '340', label: 'Bebês\nbeneficiados'),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _VerticalDivider extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) =>
+      Container(height: 40, width: 1, color: AppColors.divider);
+}
+
+class _StatItem extends StatelessWidget {
+  final String value;
+  final String label;
+  const _StatItem({required this.value, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Column(
+        children: [
+          Text(
+            value,
+            style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+              color: AppColors.primary,
+              fontSize: 19,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            label,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.labelSmall,
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _QuickActionsRow extends StatelessWidget {
+  const _QuickActionsRow();
+
+  @override
+  Widget build(BuildContext context) {
+    const actions = [
+      (Icons.water_drop_outlined, 'Quero Doar'),
+      (Icons.info_outline, 'Informações'),
+      (Icons.location_on_outlined, 'Pontos de\nColeta'),
+    ];
+    return Row(
+      children: actions
+          .map(
+            (a) => Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 4),
+                child: _QuickActionCard(icon: a.$1, label: a.$2),
+              ),
+            ),
+          )
+          .toList(),
+    );
+  }
+}
+
+class _QuickActionCard extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  const _QuickActionCard({required this.icon, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: AppColors.surface,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: () {},
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 8),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: AppShadows.soft,
+          ),
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: AppColors.accent.withOpacity(0.5),
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(icon, color: AppColors.primaryDark, size: 20),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                label,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CampaignCard extends StatelessWidget {
+  final String title;
+  final String date;
+  final String description;
+  final IconData icon;
+
+  const _CampaignCard({
+    required this.title,
+    required this.date,
+    required this.description,
+    this.icon = Icons.water_drop,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(AppRadius.card),
+        boxShadow: AppShadows.card,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(title, style: Theme.of(context).textTheme.titleMedium),
+                  const SizedBox(height: 6),
+                  Text(date, style: Theme.of(context).textTheme.labelSmall),
+                  const SizedBox(height: 10),
+                  Text(
+                    description,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topRight: Radius.circular(AppRadius.card),
+              bottomRight: Radius.circular(AppRadius.card),
+            ),
+            child: Container(
+              width: 96,
+              height: 130,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    AppColors.accent.withOpacity(0.6),
+                    AppColors.primaryLight.withOpacity(0.4),
+                  ],
+                ),
+              ),
+              child: Icon(
+                icon,
+                color: AppColors.primary.withOpacity(0.5),
+                size: 34,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
