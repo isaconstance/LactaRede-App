@@ -13,7 +13,6 @@ class SplashScreen extends StatelessWidget {
           children: [
             const SizedBox(height: 45),
 
-            // LOGO
             Image.asset(
               'images/logo.png',
               width: 60,
@@ -23,7 +22,6 @@ class SplashScreen extends StatelessWidget {
 
             const SizedBox(height: 5),
 
-            // NOME DA APLICAÇÃO
             RichText(
               text: const TextSpan(
                 style: TextStyle(
@@ -46,7 +44,6 @@ class SplashScreen extends StatelessWidget {
 
             const SizedBox(height: 2),
 
-            // SUBTÍTULO
             const Text(
               'Doe amor, alimente vidas',
               style: TextStyle(fontSize: 16, color: Colors.black),
@@ -54,7 +51,6 @@ class SplashScreen extends StatelessWidget {
 
             const SizedBox(height: 55),
 
-            // ILUSTRAÇÃO
             Expanded(
               child: Image.asset(
                 'images/mae_amamentando.png',
@@ -64,7 +60,6 @@ class SplashScreen extends StatelessWidget {
               ),
             ),
 
-            // BOTÃO
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 23, vertical: 35),
               child: SizedBox(
