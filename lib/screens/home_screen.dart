@@ -55,7 +55,7 @@ class HomeScreen extends StatelessWidget {
                   date: 'Agora perto de você',
                   description:
                       'Abrimos um novo posto de coleta na sua região. Confira o endereço e horários.',
-                  icon: Icons.location_on,   
+                  icon: Icons.location_on,
                 ),
               ]),
             ),
@@ -238,21 +238,27 @@ class _QuickActionsRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const actions = [
-      (Icons.water_drop_outlined, 'Quero Doar'),
-      (Icons.info_outline, 'Informações'),
-      (Icons.location_on_outlined, 'Pontos de\nColeta'),
+      (Icons.water_drop_outlined, 'Quero Doar', '/doar'),
+      (Icons.info_outline, 'Informações', '/informacoes'),
+      (Icons.location_on_outlined, 'Pontos de\nColeta', '/pontos-de-coleta'),
     ];
-    return Row(
-      children: actions
-          .map(
-            (a) => Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 4),
-                child: _QuickActionCard(icon: a.$1, label: a.$2),
+    return IntrinsicHeight(
+      child: Row(
+        children: actions
+            .map(
+              (a) => Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  child: _QuickActionCard(
+                    icon: a.$1, 
+                    label: a.$2,
+                    onTap: () => Navigator.of(context).pushNamed(a.$3)
+                  ),
+                ),
               ),
-            ),
-          )
-          .toList(),
+            )
+            .toList(),
+      ),
     );
   }
 }
@@ -260,7 +266,8 @@ class _QuickActionsRow extends StatelessWidget {
 class _QuickActionCard extends StatelessWidget {
   final IconData icon;
   final String label;
-  const _QuickActionCard({required this.icon, required this.label});
+  final VoidCallback? onTap;
+  const _QuickActionCard({required this.icon, required this.label, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -269,7 +276,7 @@ class _QuickActionCard extends StatelessWidget {
       borderRadius: BorderRadius.circular(16),
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
-        onTap: () {},
+        onTap: onTap ?? () {},
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 8),
           decoration: BoxDecoration(
@@ -277,11 +284,12 @@ class _QuickActionCard extends StatelessWidget {
             boxShadow: AppShadows.soft,
           ),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: AppColors.accent.withOpacity(0.5),
+                  color: AppColors.accent.withValues(alpha: 0.5),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(icon, color: AppColors.primaryDark, size: 20),
