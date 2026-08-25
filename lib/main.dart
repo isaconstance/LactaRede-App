@@ -5,6 +5,8 @@ import 'theme/app_theme.dart';
 import 'screens/home_screen.dart';
 import 'screens/account_screen.dart';
 import 'screens/splash_screen.dart';
+import 'screens/infos_screen.dart';
+import 'screens/pontos_coleta_screen.dart';
 
 void main() => runApp(const LactaRedeApp());
 
@@ -23,6 +25,8 @@ class LactaRedeApp extends StatelessWidget {
         '/conta': (_) => const AccountScreen(),
         '/ajuda': (_) => const HelpScreen(),
         '/agendamentos': (_) => const AgendamentosScreen(),
+        '/informacoes': (_) => const InfosScreen(),
+        '/pontos-de-coleta': (_) => const PontosColetaScreen(),
       },
     );
   }
