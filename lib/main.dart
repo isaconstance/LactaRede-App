@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:lactarede/screens/agendamentos_screen.dart';
+import 'package:lactarede/screens/help_screen.dart';
 import 'theme/app_theme.dart';
 import 'screens/home_screen.dart';
 import 'screens/account_screen.dart';
@@ -21,6 +23,8 @@ class LactaRedeApp extends StatelessWidget {
       routes: {
         '/inicio': (_) => const HomeScreen(),
         '/conta': (_) => const AccountScreen(),
+        '/ajuda': (_) => const HelpScreen(),
+        '/agendamentos': (_) => const AgendamentosScreen(),
         '/informacoes': (_) => const InfosScreen(),
         '/pontos-de-coleta': (_) => const PontosColetaScreen(),
       },

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lactarede/screens/notifications_screen.dart';
 import '../theme/app_theme.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/wave_clipper.dart';
@@ -104,7 +105,14 @@ class _HomeHeader extends StatelessWidget {
                           Icons.notifications_none,
                           color: Colors.white,
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const NotificationsScreen(),
+                            ),
+                          );
+                        },
                       ),
                       Positioned(
                         right: 10,

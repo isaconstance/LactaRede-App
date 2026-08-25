@@ -13,7 +13,6 @@ class SplashScreen extends StatelessWidget {
           children: [
             const Spacer(flex: 2),
 
-            // LOGO
             Image.asset(
               'images/logo.png',
               width: 65,
@@ -56,6 +55,15 @@ class SplashScreen extends StatelessWidget {
 
             const Spacer(flex: 3),
 
+            Expanded(
+              child: Image.asset(
+                'images/mae_amamentando.png',
+                width: 280,
+                height: 280,
+                fit: BoxFit.contain,
+              ),
+            ),
+
             SizedBox(
               width: 300,
               height: 300,
@@ -88,7 +96,6 @@ class SplashScreen extends StatelessWidget {
 
             const Spacer(flex: 4),
 
-            // BOTÃO
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 28),
               child: SizedBox(
