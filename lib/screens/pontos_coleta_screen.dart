@@ -3,7 +3,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import '../theme/app_theme.dart';
-import '../data/pontos_coleta.dart';
+import '../data/pontos_coleta_data.dart';
+import '../models/pontos_coleta.dart';
 
 const _stadiaApiKey = '62d3332e-b75b-46b2-819f-039d5ebc9ae0';
 
@@ -30,6 +31,7 @@ class _CollectionPointsScreenState extends State<PontosColetaScreen> {
   List<_PointWithDistance> _sortedPoints = pontosColeta.map((p) => _PointWithDistance(p, null)).toList(); 
   bool _loadingLocation = true; 
   String? _locationError; 
+  LatLng? _userLocation;
 
   static final _center = LatLng(
     pontosColeta[0].latitude,
@@ -84,8 +86,11 @@ class _CollectionPointsScreenState extends State<PontosColetaScreen> {
       setState(() {
         _sortedPoints = withDistances;
         _selectedPoint = withDistances.first.point;
+        _userLocation = userLatLng;
         _loadingLocation = false;
       });
+
+      WidgetsBinding.instance.addPostFrameCallback((_) => _fitMapToShowEverything());
     } catch (e) {
       setState(() {
         _loadingLocation = false;
@@ -97,6 +102,19 @@ class _CollectionPointsScreenState extends State<PontosColetaScreen> {
   void _selectPoint(PontosColeta point) {
     setState(() => _selectedPoint = point);
     _mapController.move(LatLng(point.latitude, point.longitude), 14);
+  }
+
+  void _fitMapToShowEverything() {
+    final allPoints = [
+      if (_userLocation != null) _userLocation!,
+      for (final item in _sortedPoints) LatLng(item.point.latitude, item.point.longitude),
+    ];
+    if (allPoints.isEmpty) return;
+
+    final bounds = LatLngBounds.fromPoints(allPoints);
+    _mapController.fitCamera(
+      CameraFit.bounds(bounds: bounds, padding: const EdgeInsets.all(40)),
+    );
   }
 
   @override
@@ -150,6 +168,18 @@ class _CollectionPointsScreenState extends State<PontosColetaScreen> {
                                 ),
                               ),
                             ),
+                        ],
+                      ),
+                      // marcador da loc do usuario
+                      if (_userLocation != null)
+                      MarkerLayer(
+                        markers: [
+                          Marker(
+                          point: _userLocation!,
+                          width: 26,
+                          height: 26,
+                          child: const _UserLocationDot(),
+                          ),
                         ],
                       ),
                     ],
@@ -310,6 +340,43 @@ class _ZoomButton extends StatelessWidget {
           child: Icon(icon, size: 20, color: AppColors.primaryDark),
         ),
       ),
+    );
+  }
+}
+
+class _UserLocationDot extends StatelessWidget{
+  const _UserLocationDot();
+
+  @override
+  Widget build(BuildContext context){
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Container(
+          width: 26,
+          height: 26,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: AppColors.primary.withValues(alpha: 0.2),
+          ),
+        ),
+        Container(
+          width: 14,
+          height: 14,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: AppColors.primary,
+            border: Border.all(color: Colors.white, width: 2.5),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.25),
+                blurRadius: 4,
+                offset: Offset(0, 1),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

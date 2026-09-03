@@ -1,21 +1,6 @@
-// Endereços e coordenadas reais de bancos de leite humano em São Paulo
+import '../models/pontos_coleta.dart';
 
-class PontosColeta {
-  final String name;
-  final String address;
-  final double distanciaKm; // apenas exibição
-  final double latitude;
-  final double longitude;
-
-const  PontosColeta({
-    required this.name,
-    required this.address,
-    required this.distanciaKm,
-    required this.latitude,
-    required this.longitude,
-  });
-}
-
+/// Endereços e coordenadas reais de bancos de leite humano em São Paulo,
 const pontosColeta = <PontosColeta>[
   PontosColeta(
     name: 'Lactare - Banco de Leite Humano',
@@ -45,5 +30,4 @@ const pontosColeta = <PontosColeta>[
     latitude: -23.5744655,
     longitude: -46.6383279,
   ),
-  
 ];

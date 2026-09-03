@@ -55,14 +55,6 @@ class SplashScreen extends StatelessWidget {
 
             const Spacer(flex: 3),
 
-            Expanded(
-              child: Image.asset(
-                'images/mae_amamentando.png',
-                width: 280,
-                height: 280,
-                fit: BoxFit.contain,
-              ),
-            ),
 
             SizedBox(
               width: 300,

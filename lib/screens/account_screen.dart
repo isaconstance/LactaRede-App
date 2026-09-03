@@ -1,8 +1,29 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../models/user_profile.dart';
+import 'edit_perfil_screen.dart';
 
-class AccountScreen extends StatelessWidget {
+class AccountScreen extends StatefulWidget {
   const AccountScreen({super.key});
+
+  @override
+  State<AccountScreen> createState() => _AccountScreenState();
+}
+
+class _AccountScreenState extends State<AccountScreen> {
+  UserProfile _perfil = UserProfile.exemplo;
+
+  Future<void> _abrirEdicaoDePerfil() async {
+    final resultado = await Navigator.of(context).push<UserProfile>(
+      MaterialPageRoute(
+        builder: (_) => EditProfileScreen(perfilAtual: _perfil),
+      ),
+    );
+
+    if (resultado != null) {
+      setState(() => _perfil = resultado);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +41,10 @@ class AccountScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
         children: [
-          const _ProfileHeader(),
+          _ProfileHeader(
+            perfil: _perfil,
+            onEditPressed: _abrirEdicaoDePerfil,
+          ),
           const SizedBox(height: 28),
           Container(
             decoration: BoxDecoration(
@@ -29,12 +53,16 @@ class AccountScreen extends StatelessWidget {
               boxShadow: AppShadows.card,
             ),
             child: Column(
-              children: const [
-                _AccountTile(icon: Icons.person_outline, label: 'Meus Dados'),
-                _TileDivider(),
-                _AccountTile(icon: Icons.water_drop_outlined, label: 'Minhas Doações'),
-                _TileDivider(),
-                _AccountTile(icon: Icons.notifications_none, label: 'Notificações'),
+              children: [
+                _AccountTile(
+                  icon: Icons.person_outline,
+                  label: 'Meus Dados',
+                  onTap: _abrirEdicaoDePerfil,
+                ),
+                const _TileDivider(),
+                const _AccountTile(icon: Icons.water_drop_outlined, label: 'Minhas Doações'),
+                const _TileDivider(),
+                const _AccountTile(icon: Icons.notifications_none, label: 'Notificações'),
               ],
             ),
           ),
@@ -62,7 +90,9 @@ class AccountScreen extends StatelessWidget {
 }
 
 class _ProfileHeader extends StatelessWidget {
-  const _ProfileHeader();
+  final UserProfile perfil;
+  final VoidCallback onEditPressed;
+  const _ProfileHeader({required this.perfil, required this.onEditPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -85,9 +115,9 @@ class _ProfileHeader extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Mariana Ribeiro', style: Theme.of(context).textTheme.titleLarge),
+              Text(perfil.nome, style: Theme.of(context).textTheme.titleLarge),
               const SizedBox(height: 2),
-              Text('mari.ribeiro@gmail.com', style: Theme.of(context).textTheme.bodyMedium),
+              Text(perfil.email, style: Theme.of(context).textTheme.bodyMedium),
               const SizedBox(height: 12),
               SizedBox(
                 height: 36,
@@ -95,7 +125,7 @@ class _ProfileHeader extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                   ),
-                  onPressed: () {},
+                  onPressed: onEditPressed,
                   child: const Text('Editar Perfil'),
                 ),
               ),
@@ -110,14 +140,15 @@ class _ProfileHeader extends StatelessWidget {
 class _AccountTile extends StatelessWidget {
   final IconData icon;
   final String label;
-  const _AccountTile({required this.icon, required this.label});
+  final VoidCallback? onTap;
+  const _AccountTile({required this.icon, required this.label, this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: () {},
+        onTap: onTap ?? () {},
         borderRadius: BorderRadius.circular(AppRadius.card),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
