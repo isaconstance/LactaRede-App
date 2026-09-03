@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
+import '../../theme/app_theme.dart';
 
 //Tela exibida após o usuário concluir um agendamento de doação
 
-class AgentamentoConcluidoScreen extends StatelessWidget {
-  const AgentamentoConcluidoScreen({super.key});
+class AgendamentoConcluidoScreen extends StatelessWidget {
+  const AgendamentoConcluidoScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +50,7 @@ class AgentamentoConcluidoScreen extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    // navegar para tela de detalhes do agendamento
+                    Navigator.of(context).pushNamed('/agendamentos');
                   },
                   child: const Text('Ver Agendamento'),
                 ),
