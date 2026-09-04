@@ -109,7 +109,7 @@ A tela de Minha Conta apresenta os dados da usuária e permite acessar as opçõ
 
 A tela de Alteração de Dados permite que a usuária edite e atualize suas informações cadastradas.
 
-<img width="499" height="679" alt="Screenshot 2026-09-04 184252" src="https://github.com/user-attachments/assets/eb41e747-ba17-4af2-b606-5a60d881f084" />
+<img width="502" height="737" alt="Screenshot 2026-09-04 184447" src="https://github.com/user-attachments/assets/b3492434-c76e-4527-b369-be4535573f9e" />
 
 
 ---
