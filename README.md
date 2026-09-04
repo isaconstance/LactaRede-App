@@ -55,10 +55,13 @@ Tela destinada ao fluxo de doação.
 
 <img width="496" height="736" alt="Screenshot 2026-09-04 183437" src="https://github.com/user-attachments/assets/ef0a730a-034e-4ac7-bbe1-afa4f69a6cb8" />
 <img width="499" height="739" alt="Screenshot 2026-09-04 183411" src="https://github.com/user-attachments/assets/65d20fa4-930b-412f-b9f1-72b129f4fcd2" />
+
 <img width="501" height="735" alt="Screenshot 2026-09-04 183627" src="https://github.com/user-attachments/assets/c21c58eb-d638-4f5a-9aa1-19c1f1b9a743" />
 <img width="497" height="733" alt="Screenshot 2026-09-04 183551" src="https://github.com/user-attachments/assets/74929fff-8155-44c3-8f5b-913daf18afa8" />
+
 <img width="500" height="738" alt="Screenshot 2026-09-04 183537" src="https://github.com/user-attachments/assets/9f21a055-7f30-4bd9-a967-18e3e2231318" />
 <img width="499" height="733" alt="Screenshot 2026-09-04 183522" src="https://github.com/user-attachments/assets/3ac13f4c-0445-4ace-89ff-0ff57e3ee2ac" />
+
 <img width="500" height="736" alt="Screenshot 2026-09-04 183458" src="https://github.com/user-attachments/assets/7bbb612c-2068-4a1c-9e85-003ee121ceaa" />
 
 
@@ -116,16 +119,7 @@ A tela de Alteração de Dados permite que a usuária edite e atualize suas info
 
 ### Fluxo de navegação
 
-Splash
-  ↓
-Login ←→ Cadastro
-  ↓
-Home
-  ├── Doação
-  ├── Pontos de Coleta
-  ├── Meus Agendamentos
-  ├── Informações
-  └── Ajuda
+Ao iniciar o aplicativo, a usuária é direcionada para a Splash Screen e, em seguida, para a tela de Login, onde também pode acessar a tela de Cadastro. Após realizar o acesso, a usuária é direcionada para a Home, que funciona como ponto principal de navegação do aplicativo. A partir dela, é possível acessar as telas de Doação, Pontos de Coleta, Meus Agendamentos, Informações e Ajuda.
 
 ---
 
