@@ -1,30 +1,77 @@
 import 'package:flutter/material.dart';
+
 import 'package:lactarede/screens/notifications_screen.dart';
+
 import '../theme/app_theme.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/wave_clipper.dart';
+import '../models/user_profile.dart';
+import '../services/perfil_storage_service.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  UserProfile _perfil = UserProfile.exemplo;
+
+  final PerfilStorageService _perfilStorage = PerfilStorageService();
+
+  @override
+  void initState() {
+    super.initState();
+    _carregarPerfil();
+  }
+
+  Future<void> _carregarPerfil() async {
+    try {
+      final perfilSalvo = await _perfilStorage.carregarPerfil();
+
+      if (!mounted) return;
+
+      if (perfilSalvo != null) {
+        setState(() {
+          _perfil = perfilSalvo;
+        });
+      }
+    } catch (_) {
+      // Mantém o perfil de exemplo caso aconteça algum erro.
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: AppDrawer(
-        userName: 'Mariana Ribeiro',
-        userEmail: 'mari.ribeiro@gmail.com',
+        userName: _perfil.nome,
+        userEmail: _perfil.email,
         currentRoute: '/inicio',
-        onNavigate: (route) {
+        onNavigate: (route) async {
+          // Fecha o Drawer.
           Navigator.of(context).pop();
+
+          // Se não for a própria Home, abre a tela escolhida.
           if (route != '/inicio') {
-            Navigator.of(context).pushNamed(route);
+            await Navigator.of(context).pushNamed(route);
+
+            // Quando voltar para a Home, recarrega o perfil salvo.
+            if (mounted) {
+              await _carregarPerfil();
+            }
           }
         },
       ),
       backgroundColor: AppColors.background,
       body: CustomScrollView(
         slivers: [
-          SliverToBoxAdapter(child: _HomeHeader()),
+          SliverToBoxAdapter(
+            child: _HomeHeader(
+              nome: _perfil.nome,
+            ),
+          ),
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(20, 20, 20, 32),
             sliver: SliverList(
@@ -68,6 +115,12 @@ class HomeScreen extends StatelessWidget {
 }
 
 class _HomeHeader extends StatelessWidget {
+  final String nome;
+
+  const _HomeHeader({
+    required this.nome,
+  });
+
   @override
   Widget build(BuildContext context) {
     return ClipPath(
@@ -75,7 +128,9 @@ class _HomeHeader extends StatelessWidget {
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.fromLTRB(8, 8, 8, 40),
-        decoration: const BoxDecoration(gradient: AppColors.gradientHeader),
+        decoration: const BoxDecoration(
+          gradient: AppColors.gradientHeader,
+        ),
         child: SafeArea(
           bottom: false,
           child: Column(
@@ -85,16 +140,21 @@ class _HomeHeader extends StatelessWidget {
                 children: [
                   Builder(
                     builder: (context) => IconButton(
-                      icon: const Icon(Icons.menu, color: Colors.white),
-                      onPressed: () => Scaffold.of(context).openDrawer(),
+                      icon: const Icon(
+                        Icons.menu,
+                        color: Colors.white,
+                      ),
+                      onPressed: () =>
+                          Scaffold.of(context).openDrawer(),
                     ),
                   ),
                   Text(
                     'LactaRede',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
-                    ),
+                    style:
+                        Theme.of(context).textTheme.titleLarge?.copyWith(
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700,
+                            ),
                   ),
                   const Spacer(),
                   Stack(
@@ -109,7 +169,8 @@ class _HomeHeader extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const NotificationsScreen(),
+                              builder: (context) =>
+                                  const NotificationsScreen(),
                             ),
                           );
                         },
@@ -138,20 +199,30 @@ class _HomeHeader extends StatelessWidget {
                   children: [
                     RichText(
                       text: TextSpan(
-                        style: Theme.of(context).textTheme.headlineSmall
-                            ?.copyWith(color: Colors.white),
-                        children: const [
-                          TextSpan(text: 'Olá, Mariana! '),
-                          TextSpan(text: '💙', style: TextStyle(fontSize: 18)),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineSmall
+                            ?.copyWith(
+                              color: Colors.white,
+                            ),
+                        children: [
+                          TextSpan(
+                            text: 'Olá, $nome! ',
+                          ),
+                          const TextSpan(
+                            text: '💙',
+                            style: TextStyle(fontSize: 18),
+                          ),
                         ],
                       ),
                     ),
                     const SizedBox(height: 4),
                     Text(
                       'Que bom ter você por aqui',
-                      style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                        color: Colors.white.withOpacity(0.9),
-                      ),
+                      style:
+                          Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                color: Colors.white.withOpacity(0.9),
+                              ),
                     ),
                   ],
                 ),
@@ -171,7 +242,10 @@ class _ImpactCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(top: 4),
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
+      padding: const EdgeInsets.symmetric(
+        vertical: 20,
+        horizontal: 12,
+      ),
       decoration: BoxDecoration(
         color: AppColors.surface,
         borderRadius: BorderRadius.circular(AppRadius.card),
@@ -181,7 +255,11 @@ class _ImpactCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.favorite, size: 16, color: AppColors.primary),
+              const Icon(
+                Icons.favorite,
+                size: 16,
+                color: AppColors.primary,
+              ),
               const SizedBox(width: 6),
               Text(
                 'Nosso Impacto',
@@ -190,13 +268,22 @@ class _ImpactCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          Row(
+          const Row(
             children: [
-              _StatItem(value: '125', label: 'Doadores\ncadastrados'),
+              _StatItem(
+                value: '125',
+                label: 'Doadores\ncadastrados',
+              ),
               _VerticalDivider(),
-              _StatItem(value: '1.250L', label: 'Leite\ndoado'),
+              _StatItem(
+                value: '1.250L',
+                label: 'Leite\ndoado',
+              ),
               _VerticalDivider(),
-              _StatItem(value: '340', label: 'Bebês\nbeneficiados'),
+              _StatItem(
+                value: '340',
+                label: 'Bebês\nbeneficiados',
+              ),
             ],
           ),
         ],
@@ -206,15 +293,26 @@ class _ImpactCard extends StatelessWidget {
 }
 
 class _VerticalDivider extends StatelessWidget {
+  const _VerticalDivider();
+
   @override
-  Widget build(BuildContext context) =>
-      Container(height: 40, width: 1, color: AppColors.divider);
+  Widget build(BuildContext context) {
+    return Container(
+      height: 40,
+      width: 1,
+      color: AppColors.divider,
+    );
+  }
 }
 
 class _StatItem extends StatelessWidget {
   final String value;
   final String label;
-  const _StatItem({required this.value, required this.label});
+
+  const _StatItem({
+    required this.value,
+    required this.label,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -224,9 +322,9 @@ class _StatItem extends StatelessWidget {
           Text(
             value,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: AppColors.primary,
-              fontSize: 19,
-            ),
+                  color: AppColors.primary,
+                  fontSize: 19,
+                ),
           ),
           const SizedBox(height: 4),
           Text(
@@ -248,8 +346,13 @@ class _QuickActionsRow extends StatelessWidget {
     const actions = [
       (Icons.water_drop_outlined, 'Quero Doar', '/doar'),
       (Icons.info_outline, 'Informações', '/informacoes'),
-      (Icons.location_on_outlined, 'Pontos de\nColeta', '/pontos-de-coleta'),
+      (
+        Icons.location_on_outlined,
+        'Pontos de\nColeta',
+        '/pontos-de-coleta'
+      ),
     ];
+
     return IntrinsicHeight(
       child: Row(
         children: actions
@@ -258,9 +361,10 @@ class _QuickActionsRow extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 4),
                   child: _QuickActionCard(
-                    icon: a.$1, 
+                    icon: a.$1,
                     label: a.$2,
-                    onTap: () => Navigator.of(context).pushNamed(a.$3)
+                    onTap: () =>
+                        Navigator.of(context).pushNamed(a.$3),
                   ),
                 ),
               ),
@@ -275,7 +379,12 @@ class _QuickActionCard extends StatelessWidget {
   final IconData icon;
   final String label;
   final VoidCallback? onTap;
-  const _QuickActionCard({required this.icon, required this.label, this.onTap});
+
+  const _QuickActionCard({
+    required this.icon,
+    required this.label,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -286,7 +395,10 @@ class _QuickActionCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         onTap: onTap ?? () {},
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 8),
+          padding: const EdgeInsets.symmetric(
+            vertical: 18,
+            horizontal: 8,
+          ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
             boxShadow: AppShadows.soft,
@@ -300,16 +412,21 @@ class _QuickActionCard extends StatelessWidget {
                   color: AppColors.accent.withValues(alpha: 0.5),
                   shape: BoxShape.circle,
                 ),
-                child: Icon(icon, color: AppColors.primaryDark, size: 20),
+                child: Icon(
+                  icon,
+                  color: AppColors.primaryDark,
+                  size: 20,
+                ),
               ),
               const SizedBox(height: 8),
               Text(
                 label,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                  color: AppColors.textPrimary,
-                  fontWeight: FontWeight.w600,
-                ),
+                style:
+                    Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: AppColors.textPrimary,
+                          fontWeight: FontWeight.w600,
+                        ),
               ),
             ],
           ),
@@ -349,13 +466,22 @@ class _CampaignCard extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(title, style: Theme.of(context).textTheme.titleMedium),
+                  Text(
+                    title,
+                    style:
+                        Theme.of(context).textTheme.titleMedium,
+                  ),
                   const SizedBox(height: 6),
-                  Text(date, style: Theme.of(context).textTheme.labelSmall),
+                  Text(
+                    date,
+                    style:
+                        Theme.of(context).textTheme.labelSmall,
+                  ),
                   const SizedBox(height: 10),
                   Text(
                     description,
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    style:
+                        Theme.of(context).textTheme.bodyMedium,
                   ),
                 ],
               ),

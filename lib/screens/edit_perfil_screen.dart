@@ -3,6 +3,7 @@ import '../theme/app_theme.dart';
 import '../models/endereco.dart';
 import '../models/user_profile.dart';
 import '../services/cep_service.dart';
+import '../services/perfil_storage_service.dart';
 import '../utils/validators.dart';
 
 class EditProfileScreen extends StatefulWidget {
@@ -33,6 +34,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   bool _salvando = false;
 
   final _cepService = CepService();
+  final _perfilStorage = PerfilStorageService();
   bool _buscandoCep = false;
   String? _cepEncontrado; 
 
@@ -99,55 +101,60 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       Validators.obrigatorio(value, campo: campo);
 
   Future<void> _salvar() async {
-    if (!_formKey.currentState!.validate()) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Corrija os campos destacados antes de salvar.'),
-          backgroundColor: AppColors.danger,
-        ),
-      );
-      return;
-    }
+  if (!_formKey.currentState!.validate()) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Corrija os campos destacados antes de salvar.'),
+        backgroundColor: AppColors.danger,
+      ),
+    );
+    return;
+  }
 
-    setState(() => _salvando = true);
+  setState(() => _salvando = true);
 
-    try {
-      await Future.delayed(const Duration(milliseconds: 600));
+  try {
+    final perfilAtualizado = widget.perfilAtual.copyWith(
+      nome: _nomeController.text.trim(),
+      cpf: _cpfController.text.trim(),
+      cep: _cepController.text.trim(),
+      rua: _ruaController.text.trim(),
+      numero: _numeroController.text.trim(),
+      complemento: _complementoController.text.trim(),
+      bairro: _bairroController.text.trim(),
+      cidade: _cidadeController.text.trim(),
+      uf: _ufController.text.trim(),
+      telefone: _telefoneController.text.trim(),
+      email: _emailController.text.trim(),
+    );
 
-      final perfilAtualizado = widget.perfilAtual.copyWith(
-        nome: _nomeController.text.trim(),
-        cpf: _cpfController.text.trim(),
-        cep: _cepController.text.trim(),
-        rua: _ruaController.text.trim(),
-        numero: _numeroController.text.trim(),
-        complemento: _complementoController.text.trim(),
-        bairro: _bairroController.text.trim(),
-        cidade: _cidadeController.text.trim(),
-        uf: _ufController.text.trim(),
-        telefone: _telefoneController.text.trim(),
-        email: _emailController.text.trim(),
-      );
+    await _perfilStorage.salvarPerfil(perfilAtualizado);
 
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Perfil atualizado com sucesso!'),
-          backgroundColor: AppColors.primary,
-        ),
-      );
-      Navigator.of(context).pop(perfilAtualizado);
-    } catch (e) {
-      if (!mounted) return;
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Não foi possível salvar: tente novamente.'),
-          backgroundColor: AppColors.danger,
-        ),
-      );
-    } finally {
-      if (mounted) setState(() => _salvando = false);
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Perfil atualizado com sucesso!'),
+        backgroundColor: AppColors.primary,
+      ),
+    );
+
+    Navigator.of(context).pop(perfilAtualizado);
+  } catch (e) {
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Não foi possível salvar: tente novamente.'),
+        backgroundColor: AppColors.danger,
+      ),
+    );
+  } finally {
+    if (mounted) {
+      setState(() => _salvando = false);
     }
   }
+}
 
   @override
   Widget build(BuildContext context) {
